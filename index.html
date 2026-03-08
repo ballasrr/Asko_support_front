@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Отзыв — АСКО</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      color: #1a1a1a;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0 16px;
+      background: linear-gradient(135deg, #c8102e 0%, #a00d24 100%);
+      color: white;
+      border-radius: 0 0 24px 24px;
+      margin-bottom: 20px;
+    }
+    .logo-svg {
+      width: 180px;
+      height: auto;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 600;
+    }
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 500;
+      font-size: 15px;
+      color: #333;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+      background: white;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    .grade-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 20px;
+    }
+    .grade-btn {
+      flex: 1;
+      min-width: 70px;
+      padding: 12px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: white;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+    }
+    .grade-btn.active {
+      background: #c8102e;
+      color: white;
+      border-color: #c8102e;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(200,16,46,0.3);
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 16px;
+      background: #c8102e;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 28px;
+      cursor: pointer;
+    }
+    button[type="submit"]:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    .error {
+      color: #c8102e;
+      font-size: 14px;
+      margin-top: 6px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <!-- SVG логотип АСКО -->
+    <svg class="logo-svg" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <style>
+          .flame { fill: #ffcc00; }
+          .text { fill: white; font-family: Arial, sans-serif; font-weight: bold; }
+        </style>
+      </defs>
+      <polygon points="20,100 100,20 180,100" fill="#c8102e"/>
+      <path class="flame" d="M100,20 Q 80,0 100,-20 Q 120,0 100,20 Z M100,0 Q 90,-10 100,-30 Q 110,-10 100,0 Z"/>
+      <text x="190" y="70" font-size="68" class="text">ASKO</text>
+    </svg>
+    
+    <h1>Оставить отзыв</h1>
+  </div>
+
+  <form id="review-form">
+
+    <label for="station">Выберите заправку *</label>
+    <select id="station" name="station" required>
+      <option value="" disabled selected>Выберите АСКО...</option>
+      <option value="1">АСКО-Центр (ул. Ленина, 15)</option>
+      <option value="2">АСКО-Север (пр. Мира, 78)</option>
+      <option value="3">АСКО-Юг (ул. Победы, 112)</option>
+      <option value="4">АСКО-Запад (ул. Гагарина, 45)</option>
+      <option value="5">АСКО-Восток (ул. Советская, 201)</option>
+    </select>
+
+    <label for="name">Имя *</label>
+    <input type="text" id="name" name="name" placeholder="Как к вам обращаться?" required>
+
+    <label for="surname">Фамилия *</label>
+    <input type="text" id="surname" name="surname" placeholder="Ваша фамилия" required>
+
+    <label for="phone">Номер телефона *</label>
+    <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required pattern="\+?[0-9\s\-\(\)]{10,18}">
+
+    <label>Оценка (1–5)</label>
+    <div class="grade-container" id="grade-buttons">
+      <button type="button" class="grade-btn" data-value="1">1 — Плохо</button>
+      <button type="button" class="grade-btn" data-value="2">2</button>
+      <button type="button" class="grade-btn" data-value="3">3 — Нормально</button>
+      <button type="button" class="grade-btn" data-value="4">4</button>
+      <button type="button" class="grade-btn" data-value="5">5 — Отлично 🔥</button>
+    </div>
+    <input type="hidden" id="grade" name="grade" value="">
+    <input type="hidden" id="grade_text" name="grade_text" value="">
+
+    <label for="review">Ваш отзыв *</label>
+    <textarea id="review" name="review" placeholder="Что вам понравилось / что можно улучшить?" required></textarea>
+
+    <div class="error" id="form-error">Пожалуйста, заполните все обязательные поля</div>
+
+    <button type="submit" id="submit-btn" disabled>Отправить отзыв</button>
+  </form>
+
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+  tg.MainButton.setText("Отправить").show();
+
+  // Список заправок (для примера — можно брать из базы через API)
+  const stations = {
+    "1": "АСКО-Центр (ул. Ленина, 15)",
+    "2": "АСКО-Север (пр. Мира, 78)",
+    "3": "АСКО-Юг (ул. Победы, 112)",
+    "4": "АСКО-Запад (ул. Гагарина, 45)",
+    "5": "АСКО-Восток (ул. Советская, 201)"
+  };
+
+  // Выбор оценки
+  const gradeButtons = document.querySelectorAll(".grade-btn");
+  const gradeInput = document.getElementById("grade");
+  const gradeTextInput = document.getElementById("grade_text");
+
+  gradeButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      gradeButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const value = btn.dataset.value;
+      gradeInput.value = value;
+
+      const texts = ["", "1 — Плохо", "2", "3 — Нормально", "4", "5 — Отлично 🔥"];
+      gradeTextInput.value = texts[value] || "";
+    });
+  });
+
+  // Проверка формы
+  const form = document.getElementById("review-form");
+  const submitBtn = document.getElementById("submit-btn");
+  const required = ["station", "name", "surname", "phone", "review", "grade"];
+
+  function checkForm() {
+    let valid = true;
+    required.forEach(id => {
+      const field = document.getElementById(id);
+      if (!field.value.trim()) valid = false;
+    });
+    submitBtn.disabled = !valid;
+    tg.MainButton[valid ? "enable" : "disable"]();
+  }
+
+  form.querySelectorAll("input, textarea, select").forEach(el => {
+    el.addEventListener("input", checkForm);
+    el.addEventListener("change", checkForm);
+  });
+
+  // Отправка
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const selectedStationId = document.getElementById("station").value;
+    const stationName = stations[selectedStationId];
+
+    const data = {
+      timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
+      station_id: Number(selectedStationId),
+      station_name: stationName,
+      name: document.getElementById("name").value.trim(),
+      surname: document.getElementById("surname").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      review: document.getElementById("review").value.trim(),
+      grade: Number(gradeInput.value),
+      grade_text: gradeTextInput.value
+    };
+
+    try {
+      // ← замените на ваш реальный адрес
+      const res = await fetch("https://your-backend.com/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-WebApp-InitData": tg.initData
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!res.ok) throw new Error();
+
+      tg.showPopup({
+        title: "Спасибо!",
+        message: "Отзыв отправлен",
+        buttons: [{type:"ok"}]
+      });
+      tg.close();
+
+    } catch (err) {
+      tg.showAlert("Не удалось отправить отзыв\nПопробуйте позже");
+    }
+  });
+
+  checkForm();
+</script>
+</body>
+</html>
