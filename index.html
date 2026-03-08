@@ -6,211 +6,121 @@
   <title>Отзыв — АСКО</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 0;
-      color: #1a1a1a;
-    }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-    .header {
-      text-align: center;
-      padding: 20px 0 16px;
-      background: linear-gradient(135deg, #c8102e 0%, #a00d24 100%);
-      color: white;
-      border-radius: 0 0 24px 24px;
-      margin-bottom: 20px;
-    }
-    .logo-svg {
-      width: 180px;
-      height: auto;
-      margin-bottom: 8px;
-    }
-    h1 {
-      font-size: 22px;
-      margin: 0;
-      font-weight: 600;
-    }
-    label {
-      display: block;
-      margin: 16px 0 6px;
-      font-weight: 500;
-      font-size: 15px;
-      color: #333;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 16px;
-      box-sizing: border-box;
-      background: white;
-    }
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
-    button[type="submit"] {
-      width: 100%;
-      padding: 16px;
-      background: #c8102e;
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 17px;
-      font-weight: 600;
-      margin-top: 28px;
-      cursor: pointer;
-    }
-    button[type="submit"]:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
-    }
-    .error {
-      color: #c8102e;
-      font-size: 14px;
-      margin-top: 6px;
-      display: none;
-    }
+    /* весь твой CSS здесь остаётся без изменений */
   </style>
 </head>
 <body>
 
-<div class="container">
+  <!-- весь твой HTML-контент остаётся здесь без изменений -->
+  <div class="container">
+    <div class="header">
+      <!-- логотип и заголовок -->
+    </div>
 
-  <div class="header">
-    <!-- SVG логотип АСКО -->
-    <svg class="logo-svg" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <style>
-          .flame { fill: #ffcc00; }
-          .text { fill: white; font-family: Arial, sans-serif; font-weight: bold; }
-        </style>
-      </defs>
-      <polygon points="20,100 100,20 180,100" fill="#c8102e"/>
-      <path class="flame" d="M100,20 Q 80,0 100,-20 Q 120,0 100,20 Z M100,0 Q 90,-10 100,-30 Q 110,-10 100,0 Z"/>
-      <text x="190" y="70" font-size="68" class="text">ASKO</text>
-    </svg>
-    
-    <h1>Оставить отзыв</h1>
+    <form id="review-form">
+      <!-- все поля: select, input, textarea, button -->
+    </form>
   </div>
 
-  <form id="review-form">
+  <!-- ←←← ВСТАВЛЯЙ ВСЮ ЭТУ ЧАСТЬ СЮДА (в самый конец <body>, перед </body>) -->
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.MainButton.setText("Отправить").show();
 
-    <label for="station">Выберите заправку *</label>
-    <select id="station" name="station" required>
-      <option value="" disabled selected>Выберите АСКО...</option>
-      <option value="1">АСКО-Центр (ул. Ленина, 15)</option>
-      <option value="2">АСКО-Север (пр. Мира, 78)</option>
-      <option value="3">АСКО-Юг (ул. Победы, 112)</option>
-      <option value="4">АСКО-Запад (ул. Гагарина, 45)</option>
-      <option value="5">АСКО-Восток (ул. Советская, 201)</option>
-    </select>
-
-    <label for="name">Имя *</label>
-    <input type="text" id="name" name="name" placeholder="Как к вам обращаться?" required>
-
-    <label for="surname">Фамилия *</label>
-    <input type="text" id="surname" name="surname" placeholder="Ваша фамилия" required>
-
-    <label for="phone">Номер телефона *</label>
-    <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required pattern="\+?[0-9\s\-\(\)]{10,18}">
-
-    <label for="review">Ваш отзыв *</label>
-    <textarea id="review" name="review" placeholder="Что вам понравилось / что можно улучшить? Расскажите подробно..." required></textarea>
-
-    <div class="error" id="form-error">Пожалуйста, заполните все обязательные поля</div>
-
-    <button type="submit" id="submit-btn" disabled>Отправить отзыв</button>
-  </form>
-
-</div>
-
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-  tg.MainButton.setText("Отправить").show();
-
-  // Список заправок
-  const stations = {
-    "1": "АСКО-Центр (ул. Ленина, 15)",
-    "2": "АСКО-Север (пр. Мира, 78)",
-    "3": "АСКО-Юг (ул. Победы, 112)",
-    "4": "АСКО-Запад (ул. Гагарина, 45)",
-    "5": "АСКО-Восток (ул. Советская, 201)"
-  };
-
-  // Проверка формы
-  const form = document.getElementById("review-form");
-  const submitBtn = document.getElementById("submit-btn");
-  const required = ["station", "name", "surname", "phone", "review"];
-
-  function checkForm() {
-    let valid = true;
-    required.forEach(id => {
-      const field = document.getElementById(id);
-      if (!field.value.trim()) valid = false;
-    });
-    submitBtn.disabled = !valid;
-    tg.MainButton[valid ? "enable" : "disable"]();
-  }
-
-  form.querySelectorAll("input, textarea, select").forEach(el => {
-    el.addEventListener("input", checkForm);
-    el.addEventListener("change", checkForm);
-  });
-
-  // Отправка
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-
-    const selectedStationId = document.getElementById("station").value;
-    const stationName = stations[selectedStationId];
-
-    const data = {
-      timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
-      station_id: Number(selectedStationId),
-      station_name: stationName,
-      name: document.getElementById("name").value.trim(),
-      surname: document.getElementById("surname").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      review: document.getElementById("review").value.trim()
-      // grade и grade_text полностью удалены
+    const stations = {
+      "1": "АСКО-Центр (ул. Ленина, 15)",
+      "2": "АСКО-Север (пр. Мира, 78)",
+      "3": "АСКО-Юг (ул. Победы, 112)",
+      "4": "АСКО-Запад (ул. Гагарина, 45)",
+      "5": "АСКО-Восток (ул. Советская, 201)"
     };
 
-    try {
-      // ← замените на ваш реальный адрес
-      const res = await fetch("https://your-backend.com/api/reviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Telegram-WebApp-InitData": tg.initData
-        },
-        body: JSON.stringify(data)
+    const form = document.getElementById("review-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const required = ["station", "name", "surname", "phone", "review"];
+
+    let isSubmitting = false;
+
+    function checkForm() {
+      if (isSubmitting) return;
+      let valid = true;
+      required.forEach(id => {
+        if (!document.getElementById(id).value.trim()) valid = false;
       });
-
-      if (!res.ok) throw new Error();
-
-      tg.showPopup({
-        title: "Спасибо!",
-        message: "Ваш отзыв отправлен",
-        buttons: [{type:"ok"}]
-      });
-      tg.close();
-
-    } catch (err) {
-      tg.showAlert("Не удалось отправить отзыв\nПопробуйте позже");
+      submitBtn.disabled = !valid;
+      tg.MainButton[valid ? "enable" : "disable"]();
     }
-  });
 
-  checkForm();
-</script>
+    form.querySelectorAll("input, textarea, select").forEach(el => {
+      el.addEventListener("input", checkForm);
+      el.addEventListener("change", checkForm);
+    });
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      if (isSubmitting) return;
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Отправка...";
+      tg.MainButton.showProgress(true);
+
+      const selectedId = document.getElementById("station").value;
+      const stationName = stations[selectedId];
+
+      const data = {
+        timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
+        station_id: Number(selectedId),
+        station_name: stationName,
+        name: document.getElementById("name").value.trim(),
+        surname: document.getElementById("surname").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        review: document.getElementById("review").value.trim(),
+        initData: tg.initData
+      };
+
+      try {
+        const res = await fetch("https://твой-домен.com/api/reviews", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "TelegramMiniApp"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || "Ошибка сервера");
+        }
+
+        submitBtn.textContent = "Отправлено ✓";
+        submitBtn.classList.add("sent");
+        submitBtn.disabled = true;
+
+        tg.MainButton.hideProgress();
+        tg.showPopup({
+          title: "Спасибо!",
+          message: "Отзыв отправлен. Мы свяжемся с вами в ближайшее время!",
+          buttons: [{type: "ok"}]
+        });
+
+        setTimeout(() => tg.close(), 1800);
+
+      } catch (err) {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Отправить отзыв";
+        tg.MainButton.hideProgress();
+
+        tg.showAlert("Не удалось отправить отзыв\n" + (err.message || "Попробуйте позже"));
+      }
+    });
+
+    checkForm();
+  </script>
+
 </body>
 </html>
