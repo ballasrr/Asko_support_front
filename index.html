@@ -53,33 +53,8 @@
       background: white;
     }
     textarea {
-      min-height: 110px;
+      min-height: 140px;
       resize: vertical;
-    }
-    .grade-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 12px 0 20px;
-    }
-    .grade-btn {
-      flex: 1;
-      min-width: 70px;
-      padding: 12px 8px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      background: white;
-      font-size: 15px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.18s;
-    }
-    .grade-btn.active {
-      background: #c8102e;
-      color: white;
-      border-color: #c8102e;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(200,16,46,0.3);
     }
     button[type="submit"] {
       width: 100%;
@@ -147,19 +122,8 @@
     <label for="phone">Номер телефона *</label>
     <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required pattern="\+?[0-9\s\-\(\)]{10,18}">
 
-    <label>Оценка (1–5)</label>
-    <div class="grade-container" id="grade-buttons">
-      <button type="button" class="grade-btn" data-value="1">1 — Плохо</button>
-      <button type="button" class="grade-btn" data-value="2">2</button>
-      <button type="button" class="grade-btn" data-value="3">3 — Нормально</button>
-      <button type="button" class="grade-btn" data-value="4">4</button>
-      <button type="button" class="grade-btn" data-value="5">5 — Отлично 🔥</button>
-    </div>
-    <input type="hidden" id="grade" name="grade" value="">
-    <input type="hidden" id="grade_text" name="grade_text" value="">
-
     <label for="review">Ваш отзыв *</label>
-    <textarea id="review" name="review" placeholder="Что вам понравилось / что можно улучшить?" required></textarea>
+    <textarea id="review" name="review" placeholder="Что вам понравилось / что можно улучшить? Расскажите подробно..." required></textarea>
 
     <div class="error" id="form-error">Пожалуйста, заполните все обязательные поля</div>
 
@@ -174,7 +138,7 @@
   tg.expand();
   tg.MainButton.setText("Отправить").show();
 
-  // Список заправок (для примера — можно брать из базы через API)
+  // Список заправок
   const stations = {
     "1": "АСКО-Центр (ул. Ленина, 15)",
     "2": "АСКО-Север (пр. Мира, 78)",
@@ -183,27 +147,10 @@
     "5": "АСКО-Восток (ул. Советская, 201)"
   };
 
-  // Выбор оценки
-  const gradeButtons = document.querySelectorAll(".grade-btn");
-  const gradeInput = document.getElementById("grade");
-  const gradeTextInput = document.getElementById("grade_text");
-
-  gradeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      gradeButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const value = btn.dataset.value;
-      gradeInput.value = value;
-
-      const texts = ["", "1 — Плохо", "2", "3 — Нормально", "4", "5 — Отлично 🔥"];
-      gradeTextInput.value = texts[value] || "";
-    });
-  });
-
   // Проверка формы
   const form = document.getElementById("review-form");
   const submitBtn = document.getElementById("submit-btn");
-  const required = ["station", "name", "surname", "phone", "review", "grade"];
+  const required = ["station", "name", "surname", "phone", "review"];
 
   function checkForm() {
     let valid = true;
@@ -234,9 +181,8 @@
       name: document.getElementById("name").value.trim(),
       surname: document.getElementById("surname").value.trim(),
       phone: document.getElementById("phone").value.trim(),
-      review: document.getElementById("review").value.trim(),
-      grade: Number(gradeInput.value),
-      grade_text: gradeTextInput.value
+      review: document.getElementById("review").value.trim()
+      // grade и grade_text полностью удалены
     };
 
     try {
@@ -254,7 +200,7 @@
 
       tg.showPopup({
         title: "Спасибо!",
-        message: "Отзыв отправлен",
+        message: "Ваш отзыв отправлен",
         buttons: [{type:"ok"}]
       });
       tg.close();
